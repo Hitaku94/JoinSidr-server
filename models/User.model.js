@@ -9,7 +9,7 @@ const userSchema = new Schema({
     description: String,
     profilePic: {type: String, default: './images/profiledefault.webloc'},
     country: String,
-    expererience: {type: String, enum:["student", "Junior 0-2 years of experience", "Senior 2+ years" ]},
+    experience: {type: String, enum:["student", "Junior 0-2 years of experience", "Senior 2+ years" ]},
     available: Boolean,
     workLocation: {type:String, enum:["office", "remote"]},
     skills:[ {type:String, enum:["HTML", "CSS", "JavaScript", "React", "Angular", "other"]}]
