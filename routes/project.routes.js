@@ -5,7 +5,6 @@ const ProjectModel = require('../models/project.model')
 // use this path for the axios: "/api/trends"
 router.get('/trends', (req, res) => {
   ProjectModel.find()
-    .populate(user)
     .then((trends) => {
       res.status(200).json(trends)
     }).catch((err) => {
