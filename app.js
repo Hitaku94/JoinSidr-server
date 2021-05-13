@@ -15,7 +15,8 @@ const app = express();
 require('./config')(app);
 
 //Set up connect-mongo
-
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
 app.use(session({
   secret: process.env.SESSION_KEY,
   saveUninitialized: false, 
@@ -35,7 +36,7 @@ const allRoutes = require('./routes');
 app.use('/api', allRoutes);
 
 const authRoutes = require("./routes/auth.routes");
-app.use('/api', authRoutes)
+app.use('/api', authRoutes);
 
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require('./error-handling')(app);

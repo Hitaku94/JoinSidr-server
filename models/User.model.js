@@ -5,7 +5,7 @@ const userSchema = new Schema({
     username: {type: String, required: true, unique: true},
     email: {type: String, required: true, unique: true},
     password: {type: String, required: true},
-    userType: {type: String, enum:["recruiter", "devUser"], required: true},
+    userType: {type: String, enum:["recruiter", "devUser"]},
     description: String,
     profilePic: {type: String, default: './images/profiledefault.webloc'},
     country: String,
