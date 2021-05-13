@@ -31,20 +31,22 @@ router.post('/signup', (req, res) => {
     // creating a salt 
     let salt = bcrypt.genSaltSync(10);
     let hash = bcrypt.hashSync(password, salt);
-    UserModel.create({username, email, passwordHash: hash})
+    UserModel.create({username, email, password: hash})
       .then((user) => {
         // ensuring that we don't share the hash as well with the user
-        user.passwordHash = "***";
+        user.password = "***";
         res.status(200).json(user);
       })
       .catch((err) => {
         if (err.code === 11000) {
+          console.log("err1")
           res.status(500).json({
             errorMessage: 'username or email entered already exists!',
             message: err,
           });
         } 
         else {
+          console.log("err2")
           res.status(500).json({
             errorMessage: 'Something went wrong! Go to sleep!',
             message: err,
@@ -116,27 +118,5 @@ router.post('/logout', (req, res) => {
     // Nothing to send back to the user
     res.status(204).json({});
 })
-
-
-// middleware to check if user is loggedIn
-const isLoggedIn = (req, res, next) => {  
-  if (req.session.loggedInUser) {
-      //calls whatever is to be executed after the isLoggedIn function is over
-      next()
-  }
-  else {
-      res.status(401).json({
-          message: 'Unauthorized user',
-          code: 401,
-      })
-  };
-};
-
-
-// THIS IS A PROTECTED ROUTE
-// will handle all get requests to http:localhost:5005/api/user
-router.get("/profile", isLoggedIn, (req, res, next) => {
-  res.status(200).json(req.session.loggedInUser);
-});
 
 module.exports = router;
