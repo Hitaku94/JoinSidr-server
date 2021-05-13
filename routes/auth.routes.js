@@ -77,12 +77,12 @@ router.post('/signin', (req, res) => {
     UserModel.findOne({email})
       .then((userData) => {
            //check if passwords match
-          bcrypt.compare(password, userData.passwordHash)
+          bcrypt.compare(password, userData.password)
             .then((doesItMatch) => {
                 //if it matches
                 if (doesItMatch) {
                   // req.session is the special object that is available to you
-                  userData.passwordHash = "***";
+                  userData.password = "***";
                   req.session.loggedInUser = userData;
                   res.status(200).json(userData)
                 }

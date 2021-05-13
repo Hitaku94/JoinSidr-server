@@ -22,7 +22,6 @@ router.get("/profile", isLoggedIn, (req, res, next) => {
   res.status(200).json(req.session.loggedInUser);
 });
 
-
 // use this path for the axios: "/api/settings"
 router.get('/settings', isLoggedIn, (req, res) => {
 
