@@ -25,7 +25,7 @@ router.get("/profile", isLoggedIn, (req, res, next) => {
 // use this path for the axios: "/api/settings"
 router.get('/settings', isLoggedIn, (req, res) => {
 
-  let userId = req.session.userInfo._id
+  let userId = req.session.loggedInUser._id
 
   UserModel.findById(userId)
     .then((user) => {
@@ -41,12 +41,12 @@ router.get('/settings', isLoggedIn, (req, res) => {
 // use this path for the axios: "/api/settings"
 router.patch('/settings', isLoggedIn, (req, res) => {
   
-  let userId = req.session.userInfo._id
+  let userId = req.session.loggedInUser._id
    const { username, email, password, description, profilePic, country, experience, available, workLocation, skills } = req.body;
-
-  UserModel.findByIdAndUpdate(userId, { $set: {
-     username, email, password, description, profilePic, country, experience, available, workLocation, skills 
-    } })
+  console.log(req.body)
+  UserModel.findByIdAndUpdate(userId,  {
+    username, description, country, experience, available, workLocation, skills   
+    })
     .then((response) => {
       res.status(200).json(response)
     }).catch((err) => {
