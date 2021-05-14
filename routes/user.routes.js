@@ -50,7 +50,7 @@ router.patch('/settings', isLoggedIn, (req, res) => {
     .then((response) => {
       res.status(200).json(response)
     }).catch((err) => {
-      res.status(500).json({o
+      res.status(500).json({
         error: 'Something went wrong',
         message: err
       })
