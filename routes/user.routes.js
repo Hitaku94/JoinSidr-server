@@ -44,10 +44,11 @@ router.patch('/settings', isLoggedIn, (req, res) => {
   let userId = req.session.loggedInUser._id
    const { username, email, password, description, profilePic, country, experience, available, workLocation, skills } = req.body;
   console.log(req.body)
-  UserModel.findByIdAndUpdate(userId,  {
-    username, description, country, experience, available, workLocation, skills   
-    })
+  UserModel.findByIdAndUpdate(userId, {$set: {
+    username, description, country, experience, available, workLocation, skills, profilePic   
+    }})
     .then((response) => {
+      req.session.loggedInUser = response
       res.status(200).json(response)
     }).catch((err) => {
       res.status(500).json({
