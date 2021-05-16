@@ -22,6 +22,35 @@ router.get("/profile", isLoggedIn, (req, res, next) => {
   res.status(200).json(req.session.loggedInUser);
 });
 
+
+// use this path for the axios: "/api/users"
+router.get('/usersProfile', (req, res) => {
+  UserModel.find()
+    .then((users) => {
+      res.status(200).json(users)
+    }).catch((err) => {
+      res.status(500).json({
+        error: 'Something went wrong',
+        message: err
+      })
+    });
+})
+
+// use this path for the axios: "/api/user/{$:id}"
+//PS: ":id" is dynamic, 
+router.get('/userProfile/:id', (req, res) => {
+  UserModel.findById(req.params.id)
+    .then((response) => {
+      res.status(200).json(response)
+    }).catch((err) => {
+      res.status(500).json({
+        error: 'Something went wrong',
+        message: err
+      })
+    });
+})
+
+
 // use this path for the axios: "/api/settings"
 router.get('/settings', isLoggedIn, (req, res) => {
 
@@ -59,6 +88,8 @@ router.patch('/settings', isLoggedIn, (req, res) => {
       })
     });
 })
+
+
 
 // use this path for the axios: "/api/settings"
 router.delete('/settings', isLoggedIn, (req, res) => {
