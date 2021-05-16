@@ -7,7 +7,7 @@ const userSchema = new Schema({
     password: {type: String, required: true},
     userType: {type: String, enum:["recruiter", "devUser"]},
     description: String,
-    profilePic: {type: String, default: './images/profiledefault.webloc'},
+    profilePic: {type: String, default: './images/user.svg'},
     country: String,
     experience: {type: String, enum:["student", "Junior 0-2 years of experience", "Senior 2+ years" ]},
     available: Boolean,
