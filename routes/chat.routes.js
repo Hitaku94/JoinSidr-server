@@ -11,7 +11,7 @@ router.post('/conversation', (req, res, next) => {
     Conversation.findOne({ participants: { $all: participants} })
       .then((found) => {
         if (found) {
-          //Conversation between those participants already present
+          //Conversation between the participants already present
           res.status(200).json(found)
         }
         else {
