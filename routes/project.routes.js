@@ -36,8 +36,12 @@ router.post('/project-create', (req, res) => {
   const { title, type, description, image } = req.body
   const user = req.session.loggedInUser
   ProjectModel.create({ title, type, description, image, user })
-    .then((response) => {
-      res.status(200).json(response)
+    .then((project) => {
+      ProjectModel.findById(project._id)
+      .populate("user")
+      .then((response) => {
+        res.status(200).json(response)
+      })
     }).catch((err) => {
       res.status(500).json({
         error: 'Something went wrong',
@@ -51,7 +55,7 @@ router.post('/project-create', (req, res) => {
 router.patch('/project/:id', (req, res) => {
   let id = req.params.id
   const { title, type, description, image } = req.body;
-  ProjectModel.findByIdAndUpdate(id, { $set: { title, type, description, image } })
+  ProjectModel.findByIdAndUpdate(id, { $set: { title, type, description, image } }, {new: true})
     .populate("user")
     .then((response) => {
       res.status(200).json(response)
