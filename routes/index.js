@@ -14,6 +14,10 @@ router.get("/users", (req, res, next) => {
       res.status(200).json( response)
     })
     .catch((err) => {
+        res.status(500).json({
+          error: 'Something went wrong',
+          message: err
+        })
       next(err)
     })
 });

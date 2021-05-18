@@ -24,22 +24,9 @@ router.get("/profile", isLoggedIn, (req, res, next) => {
 });
 
 
-// use this path for the axios: "/api/users"
-router.get('/usersProfile', (req, res) => {
-  UserModel.find()
-    .then((users) => {
-      res.status(200).json(users)
-    }).catch((err) => {
-      res.status(500).json({
-        error: 'Something went wrong',
-        message: err
-      })
-    });
-})
-
 // use this path for the axios: "/api/user/{$:id}"
 //PS: ":id" is dynamic, 
-router.get('/userProfile/:id', (req, res) => {
+router.get('/user/:id', (req, res) => {
   UserModel.findById(req.params.id)
     .then((response) => {
       res.status(200).json(response)
@@ -124,9 +111,27 @@ router.get('/security', isLoggedIn, (req, res) => {
         message: err
       })
     });
+});
+
+router.patch('/type', isLoggedIn, (req, res) => {
+  
+  let userId = req.session.loggedInUser._id
+
+   const { userType } = req.body;
+  console.log(req.body)
+  UserModel.findByIdAndUpdate(userId, {$set: {userType}}, {new: true})
+    .then((response) => {
+      req.session.loggedInUser = response
+      res.status(200).json(response)
+      
+    }).catch((err) => {
+      res.status(500).json({
+        error: 'Something went wrong',
+        message: err
+      })
+    });
 })
 
-// use this path for the axios: "/api/security"
 router.patch('/security', isLoggedIn, (req, res) => {
   let { newuser, newemail, newpassword, country } = req.body
   if(newuser =='') {
@@ -157,9 +162,6 @@ router.patch('/security', isLoggedIn, (req, res) => {
     }, {new: true})
     .then((response) => {
       req.session.loggedInUser = response
-  
-      res.status(200).json(response)
-      
     }).catch((err) => {
       res.status(500).json({
         error: 'Something went wrong',
@@ -167,6 +169,58 @@ router.patch('/security', isLoggedIn, (req, res) => {
       })
     });
 })
+
+router.patch('/following', isLoggedIn, (req, res) => {
+  let userId = req.session.loggedInUser._id
+
+  const { following } = req.body;
+  console.log(req.body)
+  UserModel.findByIdAndUpdate(userId, {$push: {following: following}}, {new: true})
+    .then((response) => {
+      req.session.loggedInUser = response
+      res.status(200).json(response)
+    }).catch((err) => {
+      res.status(500).json({
+        error: 'Something went wrong',
+        message: err
+      })
+    });
+})
+      
+
+router.patch('/unfollowing', isLoggedIn, (req, res) => {
+  
+  let userId = req.session.loggedInUser._id
+
+  const { following } = req.body;
+  
+  UserModel.findByIdAndUpdate(userId, {following}, {new: true})
+    .then((response) => {
+      req.session.loggedInUser = response
+      res.status(200).json(response)
+    }).catch((err) => {
+      res.status(500).json({
+        error: 'Something went wrong',
+        message: err
+      })
+    });
+})
+
+router.patch('/user/:id', isLoggedIn,(req, res) => {
+
+  const { followers }  = req.body;
+
+  UserModel.findByIdAndUpdate(req.params.id, {$push: {followers: followers}}, {new: true})
+    .then((response) => {
+      res.status(200).json(response)
+    }).catch((err) => {
+      res.status(500).json({
+        error: 'Something went wrong',
+        message: err
+      })
+    });
+})
+
 
 
 module.exports = router;

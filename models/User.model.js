@@ -12,20 +12,14 @@ const userSchema = new Schema({
     linkedInId: String,
     userType: {type: String, enum:["Recruiter", "Workfluencer"]},
     description: String,
-    profilePic: {type: String, default: "../public/images/profileIcon.png",},
+    profilePic: {type: String, default: "images/profileIcon.png",},
     country: String,
     experience: {type: String, enum:["student", "Junior 0-2 years of experience", "Senior 2+ years" ]},
     available: Boolean,
     workLocation: {type:String, enum:["office", "remote"]},
     skills:[ {type:String, enum:["HTML", "CSS", "JavaScript", "React", "Angular", "other"]}],
-    followers: [
-        {
-          type: Schema.Types.ObjectId,
-          ref: "User",
-        },
-      ],
-
-  
+    followers: [],
+    following: [],
 });
 
 const User = model("User", userSchema);
