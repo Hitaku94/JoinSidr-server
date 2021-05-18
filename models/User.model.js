@@ -13,8 +13,10 @@ const userSchema = new Schema({
     available: Boolean,
     workLocation: {type:String, enum:["office", "remote"]},
     skills:[ {type:String, enum:["HTML", "CSS", "JavaScript", "React", "Angular", "other"]}],
-    followers: [],
-    following: [],
+    follow: [{
+      type: Schema.Types.ObjectId,
+      ref: "User"
+    }]
 });
 
 const User = model("User", userSchema);
