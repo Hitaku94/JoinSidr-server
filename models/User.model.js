@@ -3,11 +3,11 @@ const { Schema, model } = require("mongoose");
 // TODO: Please make sure you edit the user model to whatever makes sense in this case
 const userSchema = new Schema({
 
-    username: {type: String, required: true, unique: true},
+    username: {type: String, unique: true},
     firstName: String,
 	lastName: String,
     email: {type: String, required: true, unique: true},
-    password: {type: String, required: true},
+    password: {type: String,},
     googleId: String,
     linkedInId: String,
     userType: {type: String, enum:["Recruiter", "Workfluencer"]},

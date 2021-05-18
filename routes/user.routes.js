@@ -146,9 +146,9 @@ router.patch('/security', isLoggedIn, (req, res) => {
     newpassword = req.session.loggedInUser.password
   }
   else{
-    const passRe = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
+    const passRe = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/
     if (!passRe.test(newpassword)) {
-      console.log('Password must be 8 characters, must have a number, and an uppercase letter')
+      console.log('Password needs to have 8 characters, a number and an Uppercase alphabet')
       //display an error message
       return;
     }
