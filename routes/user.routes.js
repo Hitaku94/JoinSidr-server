@@ -1,4 +1,5 @@
 const express = require('express');
+const bcrypt = require('bcryptjs');
 const router = express.Router();
 const UserModel = require('../models/User.model');
 
@@ -71,14 +72,14 @@ router.get('/settings', isLoggedIn, (req, res) => {
 router.patch('/settings', isLoggedIn, (req, res) => {
   
   let userId = req.session.loggedInUser._id
-   const { username, email, password, description, profilePic, country, experience, available, workLocation, skills } = req.body;
+   const { username, description, profilePic, country, experience, available, workLocation, skills } = req.body;
   console.log(req.body)
   UserModel.findByIdAndUpdate(userId, {$set: {
     username, description, country, experience, available, workLocation, skills, profilePic   
-    }})
+    }}, {new: true})
     .then((response) => {
       req.session.loggedInUser = response
-      
+  
       res.status(200).json(response)
       
     }).catch((err) => {
@@ -94,13 +95,71 @@ router.patch('/settings', isLoggedIn, (req, res) => {
 // use this path for the axios: "/api/settings"
 router.delete('/settings', isLoggedIn, (req, res) => {
 
-  let userId = req.session.userInfo._id
+  let userId = req.session.loggedInUser._id
 
   UserModel.findByIdAndDelete(userId)
     .then((response) => {
       req.session.destroy()
       res.status(200).json(response)
 
+    }).catch((err) => {
+      res.status(500).json({
+        error: 'Something went wrong',
+        message: err
+      })
+    });
+})
+
+// use this path for the axios: "/api/security"
+router.get('/security', isLoggedIn, (req, res) => {
+
+  let userId = req.session.loggedInUser._id
+
+  UserModel.findById(userId)
+    .then((user) => {
+      res.status(200).json(user)
+    }).catch((err) => {
+      res.status(500).json({
+        error: 'Something went wrong',
+        message: err
+      })
+    });
+})
+
+// use this path for the axios: "/api/security"
+router.patch('/security', isLoggedIn, (req, res) => {
+  let { newuser, newemail, newpassword, country } = req.body
+  if(newuser =='') {
+    newuser = req.session.loggedInUser.username
+  }
+
+  if(newemail == ''){
+     newemail = req.session.loggedInUser.email
+  }
+
+  if(newpassword == ''){
+    newpassword = req.session.loggedInUser.password
+  }
+  else{
+    const passRe = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
+    if (!passRe.test(newpassword)) {
+      console.log('Password must be 8 characters, must have a number, and an uppercase letter')
+      //display an error message
+      return;
+    }
+    const salt = bcrypt.genSaltSync(12);
+    const hash = bcrypt.hashSync(newpassword, salt);
+    newpassword = hash
+  }
+ 
+  UserModel.findByIdAndUpdate(userId,{
+    username: newuser, password: newpassword, country  
+    }, {new: true})
+    .then((response) => {
+      req.session.loggedInUser = response
+  
+      res.status(200).json(response)
+      
     }).catch((err) => {
       res.status(500).json({
         error: 'Something went wrong',

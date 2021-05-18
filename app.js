@@ -52,6 +52,12 @@ app.use("/api", cloudinaryRoutes);
 const chatRoutes = require('./routes/chat.routes');
 app.use('/api', chatRoutes);
 
+const googleRoutes = require("./routes/google.routes");
+app.use('/api', googleRoutes)
+
+const linkedinRoutes = require("./routes/linkedin.routes");
+app.use('/api', linkedinRoutes)
+
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require('./error-handling')(app);
 
