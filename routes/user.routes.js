@@ -113,6 +113,7 @@ router.get('/security', isLoggedIn, (req, res) => {
     });
 });
 
+// use this path for the axios: "/api/type"
 router.patch('/type', isLoggedIn, (req, res) => {
   
   let userId = req.session.loggedInUser._id
@@ -170,12 +171,16 @@ router.patch('/security', isLoggedIn, (req, res) => {
     });
 })
 
-router.patch('/following', isLoggedIn, (req, res) => {
+
+
+// use this path for the axios: "/api/follow"
+router.patch('/follow', isLoggedIn, (req, res) => {
+  
   let userId = req.session.loggedInUser._id
 
-  const { following } = req.body;
-  console.log(req.body)
-  UserModel.findByIdAndUpdate(userId, {$push: {following: following}}, {new: true})
+  const { follow } = req.body;
+  console.log(follow)
+  UserModel.findByIdAndUpdate(userId, {$push: {follow: follow}}, {new: true})
     .then((response) => {
       req.session.loggedInUser = response
       res.status(200).json(response)
@@ -188,14 +193,16 @@ router.patch('/following', isLoggedIn, (req, res) => {
 })
       
 
-router.patch('/unfollowing', isLoggedIn, (req, res) => {
+// use this path for the axios: "/api/unfollow"
+router.patch('/unfollow', isLoggedIn, (req, res) => {
   
   let userId = req.session.loggedInUser._id
 
-  const { following } = req.body;
-  
-  UserModel.findByIdAndUpdate(userId, {following}, {new: true})
+  const { unfollow } = req.body;
+  console.log(unfollow)
+  UserModel.findByIdAndUpdate(userId, {$pull: {follow: unfollow}}, {new: true})
     .then((response) => {
+      console.log(response)
       req.session.loggedInUser = response
       res.status(200).json(response)
     }).catch((err) => {
@@ -205,22 +212,6 @@ router.patch('/unfollowing', isLoggedIn, (req, res) => {
       })
     });
 })
-
-router.patch('/user/:id', isLoggedIn,(req, res) => {
-
-  const { followers }  = req.body;
-
-  UserModel.findByIdAndUpdate(req.params.id, {$push: {followers: followers}}, {new: true})
-    .then((response) => {
-      res.status(200).json(response)
-    }).catch((err) => {
-      res.status(500).json({
-        error: 'Something went wrong',
-        message: err
-      })
-    });
-})
-
 
 
 module.exports = router;
