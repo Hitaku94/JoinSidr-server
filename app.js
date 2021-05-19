@@ -43,6 +43,9 @@ app.use('/api', authRoutes);
 const projectRoutes = require("./routes/project.routes");
 app.use('/api', projectRoutes)
 
+const jobRoutes = require("./routes/job.routes");
+app.use('/api', jobRoutes)
+
 const userRoutes = require("./routes/user.routes");
 app.use('/api', userRoutes)
 

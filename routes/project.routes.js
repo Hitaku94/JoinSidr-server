@@ -33,9 +33,9 @@ router.get('/project/:id', (req, res) => {
 
 // use this path for the axios: "/api/project-create"
 router.post('/project-create', (req, res) => {
-  const { title, type, description, image } = req.body
+  const { title, type, description, image, urlProject, urlGit, date, languages } = req.body
   const user = req.session.loggedInUser
-  ProjectModel.create({ title, type, description, image, user })
+  ProjectModel.create({ title, type, description, image, user, urlProject, urlGit, date, languages })
     .then((project) => {
       ProjectModel.findById(project._id)
       .populate("user")
@@ -54,8 +54,8 @@ router.post('/project-create', (req, res) => {
 // PS again: ":id" is dynamic, 
 router.patch('/project/:id', (req, res) => {
   let id = req.params.id
-  const { title, type, description, image } = req.body;
-  ProjectModel.findByIdAndUpdate(id, { $set: { title, type, description, image } }, {new: true})
+  const { title, type, description, image, urlProject, urlGit, languages } = req.body;
+  ProjectModel.findByIdAndUpdate(id, { $set: { title, type, description, image, urlProject, urlGit, languages } }, {new: true})
     .populate("user")
     .then((response) => {
       res.status(200).json(response)
@@ -81,5 +81,47 @@ router.delete('/project/:id', (req, res) => {
       })
     });
 })
+
+/*// use this path for the axios: "/api/like"
+router.patch('/like', isLoggedIn, (req, res) => {
+  
+  let userId = req.session.loggedInUser._id
+
+  const { follow } = req.body;
+  console.log(follow)
+  UserModel.findById(userId)
+    .then((response) => {
+      req.session.loggedInUser = response
+      res.status(200).json(response)
+    }).catch((err) => {
+      res.status(500).json({
+        error: 'Something went wrong',
+        message: err
+      })
+    });
+})
+      
+
+// use this path for the axios: "/api/unlike"
+router.patch('/unlike', isLoggedIn, (req, res) => {
+  
+  let userId = req.session.loggedInUser._id
+
+  const { unfollow } = req.body;
+  console.log(unfollow)
+  UserModel.findByIdAndUpdate(userId, {$pull: {follow: unfollow}}, {new: true})
+    .then((response) => {
+      console.log(response)
+      req.session.loggedInUser = response
+      res.status(200).json(response)
+    }).catch((err) => {
+      res.status(500).json({
+        error: 'Something went wrong',
+        message: err
+      })
+    });
+})*/
+
+
 
 module.exports = router;

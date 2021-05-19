@@ -2,10 +2,10 @@ const { Schema, model } = require("mongoose");
 require("../models/User.model")
 
 // TODO: Please make sure you edit the user model to whatever makes sense in this case
-const projectSchema = new Schema({
+const jobSchema = new Schema({
     title: {
       type: String,
-       required: true
+      required: true
       },
     type: {
       type: String,
@@ -19,25 +19,19 @@ const projectSchema = new Schema({
     image: {
       type: String
     },
-    like: {
-      type: Schema.Types.ObjectId,
-      ref:"User",
-    },
-    superlike: Number,
     user: {
       type: Schema.Types.ObjectId,
       ref:"User",
     },
-    urlProject: {
+    languages: [{
+      type: String
+    }],
+    location: {
       type: String
     },
-    urlGit: {
-      type: String
-    },
-    languages: [String],
   
 });
 
-const Project = model("Project", projectSchema);
+const Job = model("Job", jobSchema);
 
-module.exports = Project;
+module.exports = Job;
