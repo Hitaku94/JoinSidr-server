@@ -101,21 +101,7 @@ router.delete('/settings', isLoggedIn, (req, res) => {
     });
 })
 
-// use this path for the axios: "/api/security"
-router.get('/security', isLoggedIn, (req, res) => {
 
-  let userId = req.session.loggedInUser._id
-
-  UserModel.findById(userId)
-    .then((user) => {
-      res.status(200).json(user)
-    }).catch((err) => {
-      res.status(500).json({
-        error: 'Something went wrong',
-        message: err
-      })
-    });
-});
 
 // use this path for the axios: "/api/type"
 router.patch('/type', isLoggedIn, (req, res) => {
@@ -136,6 +122,22 @@ router.patch('/type', isLoggedIn, (req, res) => {
       })
     });
 })
+
+// use this path for the axios: "/api/security"
+router.get('/security', isLoggedIn, (req, res) => {
+
+  let userId = req.session.loggedInUser._id
+
+  UserModel.findById(userId)
+    .then((user) => {
+      res.status(200).json(user)
+    }).catch((err) => {
+      res.status(500).json({
+        error: 'Something went wrong',
+        message: err
+      })
+    });
+});
 
 router.patch('/security', isLoggedIn, (req, res) => {
   let { username, email, password, country } = req.body

@@ -35,7 +35,8 @@ router.get('/project/:id', (req, res) => {
 router.post('/project-create', (req, res) => {
   const { title, type, description, image, urlProject, urlGit, date, languages } = req.body
   const user = req.session.loggedInUser
-  ProjectModel.create({ title, type, description, image, user, urlProject, urlGit, date, languages })
+  let languagesArr = languages.split(",")
+  ProjectModel.create({ title, type, description, image, user, urlProject, urlGit, date, languages: languagesArr })
     .then((project) => {
       ProjectModel.findById(project._id)
       .populate("user")
@@ -55,7 +56,8 @@ router.post('/project-create', (req, res) => {
 router.patch('/project/:id', (req, res) => {
   let id = req.params.id
   const { title, type, description, image, urlProject, urlGit, languages } = req.body;
-  ProjectModel.findByIdAndUpdate(id, { $set: { title, type, description, image, urlProject, urlGit, languages } }, {new: true})
+  let languagesArr = languages.split(",")
+  ProjectModel.findByIdAndUpdate(id, { $set: { title, type, description, image, urlProject, urlGit, languages: languagesArr } }, {new: true})
     .populate("user")
     .then((response) => {
       res.status(200).json(response)
@@ -82,14 +84,16 @@ router.delete('/project/:id', (req, res) => {
     });
 })
 
-/*// use this path for the axios: "/api/like"
-router.patch('/like', isLoggedIn, (req, res) => {
+
+
+// use this path for the axios: "/api/like"
+router.patch('/like/:id', (req, res) => {
   
   let userId = req.session.loggedInUser._id
+  projectId = req.params.id
+  const { like } = req.body;
 
-  const { follow } = req.body;
-  console.log(follow)
-  UserModel.findById(userId)
+  ProjectModel.findByIdAndUpdate(projectId, {$push: {like: userId}}, {new: true})
     .then((response) => {
       req.session.loggedInUser = response
       res.status(200).json(response)
@@ -103,13 +107,13 @@ router.patch('/like', isLoggedIn, (req, res) => {
       
 
 // use this path for the axios: "/api/unlike"
-router.patch('/unlike', isLoggedIn, (req, res) => {
+router.patch('/unlike/:id', (req, res) => {
   
   let userId = req.session.loggedInUser._id
+  projectId = req.params.id
+  const { unlike } = req.body;
 
-  const { unfollow } = req.body;
-  console.log(unfollow)
-  UserModel.findByIdAndUpdate(userId, {$pull: {follow: unfollow}}, {new: true})
+  ProjectModel.findByIdAndUpdate(projectId, {$pull: {like: userId}}, {new: true})
     .then((response) => {
       console.log(response)
       req.session.loggedInUser = response
@@ -120,7 +124,7 @@ router.patch('/unlike', isLoggedIn, (req, res) => {
         message: err
       })
     });
-})*/
+})
 
 
 
