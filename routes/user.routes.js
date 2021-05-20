@@ -58,17 +58,16 @@ router.get('/settings', isLoggedIn, (req, res) => {
 // use this path for the axios: "/api/settings"
 router.patch('/settings', isLoggedIn, (req, res) => {
   let userId = req.session.loggedInUser._id
-   const { description, profilePic, experience, available, workLocation, skills, linkedinUrl, githubUrl } = req.body;
+   let { description, profilePic, experience, available, workLocation, skills, linkedinUrl, githubUrl } = req.body;
    let skillsArr = skills.split(",")
-  
-   if(profilePic == ''){
-     profilePic = req.session.loggedInUser.profilePic 
-   }
-
+   if(!profilePic){
+    profilePic = req.session.loggedInUser.profilePic 
+  }
   UserModel.findByIdAndUpdate(userId, {$set: {
     description, experience, available, workLocation, skills: skillsArr, profilePic , linkedinUrl, githubUrl 
     }}, {new: true})
     .then((response) => {
+
       req.session.loggedInUser = response
   
       res.status(200).json(response)
@@ -164,7 +163,7 @@ router.patch('/security', isLoggedIn, (req, res) => {
     }
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(password, salt);
-    newpassword = hash
+    password = hash
   }
   
   UserModel.findByIdAndUpdate(userId,{
