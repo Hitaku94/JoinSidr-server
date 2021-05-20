@@ -12,7 +12,7 @@ const userSchema = new Schema({
     linkedInId: String,
     userType: {type: String, enum:["Recruiter", "Workfluencer"]},
     description: String,
-    profilePic: {type: String, default: "images/profileIcon.png",},
+    profilePic: {type: String, default: "/images/profileIcon.png",},
     country: String,
     experience: {type: String, enum:["student", "Junior 0-2 years of experience", "Senior 2+ years" ]},
     available: Boolean,
