@@ -57,12 +57,16 @@ router.get('/settings', isLoggedIn, (req, res) => {
 
 // use this path for the axios: "/api/settings"
 router.patch('/settings', isLoggedIn, (req, res) => {
-  
   let userId = req.session.loggedInUser._id
-   const { username, description, profilePic, country, experience, available, workLocation, skills } = req.body;
-  console.log(req.body)
+   const { description, profilePic, experience, available, workLocation, skills, linkedinUrl, githubUrl } = req.body;
+   let skillsArr = skills.split(",")
+  
+   if(profilePic == ''){
+     profilePic = req.session.loggedInUser.profilePic 
+   }
+
   UserModel.findByIdAndUpdate(userId, {$set: {
-    username, description, country, experience, available, workLocation, skills, profilePic   
+    description, experience, available, workLocation, skills: skillsArr, profilePic , linkedinUrl, githubUrl 
     }}, {new: true})
     .then((response) => {
       req.session.loggedInUser = response
@@ -134,35 +138,39 @@ router.patch('/type', isLoggedIn, (req, res) => {
 })
 
 router.patch('/security', isLoggedIn, (req, res) => {
-  let { newuser, newemail, newpassword, country } = req.body
-  if(newuser =='') {
-    newuser = req.session.loggedInUser.username
+  let { username, email, password, country } = req.body
+  let userId = req.session.loggedInUser._id
+  if(username =='') {
+    username = req.session.loggedInUser.username
   }
 
-  if(newemail == ''){
-     newemail = req.session.loggedInUser.email
+  if(email == ''){
+     email = req.session.loggedInUser.email
   }
-
-  if(newpassword == ''){
-    newpassword = req.session.loggedInUser.password
+  if(country == ''){
+    country = req.session.loggedInUser.country
+  }
+  if(password == ''){
+    password = req.session.loggedInUser.password
   }
   else{
-    const passRe = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/
-    if (!passRe.test(newpassword)) {
+    const passRe = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/);
+    if (!passRe.test(password)) {
       console.log('Password needs to have 8 characters, a number and an Uppercase alphabet')
       //display an error message
       return;
     }
-    const salt = bcrypt.genSaltSync(12);
-    const hash = bcrypt.hashSync(newpassword, salt);
+    const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(password, salt);
     newpassword = hash
   }
- 
+  
   UserModel.findByIdAndUpdate(userId,{
-    username: newuser, password: newpassword, country  
+    username: username, password: password, country: country 
     }, {new: true})
     .then((response) => {
       req.session.loggedInUser = response
+      res.status(200).json(response)
     }).catch((err) => {
       res.status(500).json({
         error: 'Something went wrong',
