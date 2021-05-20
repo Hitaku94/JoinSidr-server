@@ -55,8 +55,9 @@ router.post('/project-create', (req, res) => {
 // PS again: ":id" is dynamic, 
 router.patch('/project/:id', (req, res) => {
   let id = req.params.id
-  const { title, type, description, image, urlProject, urlGit, languages } = req.body;
+  let { title, type, description, image, urlProject, urlGit, languages } = req.body;
   let languagesArr = languages.split(",")
+
   ProjectModel.findByIdAndUpdate(id, { $set: { title, type, description, image, urlProject, urlGit, languages: languagesArr } }, {new: true})
     .populate("user")
     .then((response) => {

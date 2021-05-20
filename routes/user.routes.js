@@ -190,7 +190,7 @@ router.patch('/follow', isLoggedIn, (req, res) => {
 
   const { follow } = req.body;
   console.log(follow, userId)
-  UserModel.findByIdAndUpdate(userId, {$push: {follow: follow}}, {new: true})
+  UserModel.findByIdAndUpdate(userId, {$push: {follow}}, {new: true})
     .then((response) => {
       console.log(response)
       console.log("follow hello")
